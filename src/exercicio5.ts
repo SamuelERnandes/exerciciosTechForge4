@@ -1,36 +1,60 @@
-class Agenda {
-    private compromissos: string[]; 
 
-    
-    constructor() {
-        this.compromissos = [];
+interface LivroBiblioteca {
+    titulo: string;
+    autor: string;
+    genero: string;
+    disponivel: boolean;
+}
+
+
+class BibliotecaGestao {
+    livros: LivroBiblioteca[];
+
+   
+    constructor(livros: LivroBiblioteca[]) {
+        this.livros = livros;
     }
 
-    adicionarCompromisso(compromisso: string): void {
-        this.compromissos.push(compromisso);
-        console.log(`Compromisso "${compromisso}" adicionado com sucesso.`);
+   
+    filtrarPorGenero(genero: string): LivroBiblioteca[] {
+        return this.livros.filter(livro => livro.genero.toLowerCase() === genero.toLowerCase());
     }
 
-    
-    listarCompromissos(): void {
-        if (this.compromissos.length === 0) {
-            console.log("Nenhum compromisso agendado.");
-        } else {
-            console.log("Compromissos agendados:");
-            this.compromissos.forEach((compromisso, index) => {
-                console.log(`${index + 1}. ${compromisso}`);
-            });
-        }
+   
+    buscarPorAutor(autor: string): LivroBiblioteca[] {
+        return this.livros.filter(livro => livro.autor.toLowerCase() === autor.toLowerCase());
+    }
+
+   
+    obterLivrosDisponiveisOrdenados(): LivroBiblioteca[] {
+        return this.livros
+            .filter(livro => livro.disponivel) 
+            .sort((a, b) => a.titulo.localeCompare(b.titulo)); 
     }
 }
 
 
-const minhaAgenda = new Agenda();
-
-// Adicionando compromissos
-minhaAgenda.adicionarCompromisso("Reunião com cliente às 10h");
-minhaAgenda.adicionarCompromisso("Consulta médica às 14h");
-minhaAgenda.adicionarCompromisso("Treinamento de equipe às 16h");
 
 
-minhaAgenda.listarCompromissos();
+const livros: LivroBiblioteca[] = [
+    { titulo: "1984", autor: "George Orwell", genero: "Distopia", disponivel: true },
+    { titulo: "O Senhor dos Anéis", autor: "J.R.R. Tolkien", genero: "Fantasia", disponivel: false },
+]
+
+
+const biblioteca = new BibliotecaGestao(livros);
+
+
+const livrosFantasia = biblioteca.filtrarPorGenero("Fantasia");
+console.log("Livros de Fantasia:", livrosFantasia);
+
+
+const livrosOrwell = biblioteca.buscarPorAutor("George Orwell");
+console.log("Livros de George Orwell:", livrosOrwell);
+
+
+const livrosDisponiveisOrdenados = biblioteca.obterLivrosDisponiveisOrdenados();
+console.log("Livros Disponíveis Ordenados por Título:");
+livrosDisponiveisOrdenados.forEach(livro => {
+    console.log(`Título: ${livro.titulo}, Autor: ${livro.autor}`);
+});

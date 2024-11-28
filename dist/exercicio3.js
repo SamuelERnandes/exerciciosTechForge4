@@ -1,17 +1,22 @@
 "use strict";
-class Produto {
-    constructor(nome, preco, quantidade) {
-        this.nome = nome;
-        this.preco = preco;
-        this.quantidade = quantidade;
+class Loja {
+    constructor(produtos) {
+        this.produtos = produtos;
     }
-    valorTotalEstoque() {
-        return this.preco * this.quantidade;
-    }
-    exibirValorEstoque() {
-        const estoque = this.valorTotalEstoque();
-        console.log(`O Produto: ${this.nome} tem em estoque: R$${estoque.toFixed(2)}`);
+    buscarProdutoPorCodigo(codigo) {
+        return this.produtos.find(produto => produto.codigo === codigo);
     }
 }
-const produto1 = new Produto("Parafuso", 1, 500);
-produto1.exibirValorEstoque();
+const produtos = [
+    { codigo: 1, nome: "Camiseta" },
+    { codigo: 2, nome: "Calça" },
+    { codigo: 3, nome: "Tênis" }
+];
+const loja = new Loja(produtos);
+const produtoEncontrado = loja.buscarProdutoPorCodigo(2);
+if (produtoEncontrado) {
+    console.log(`Produto encontrado: ${produtoEncontrado.nome}`);
+}
+else {
+    console.log("Produto não encontrado");
+}

@@ -1,27 +1,40 @@
-class Produto {
-    private nome: string;
-    private preco: number;
-    private quantidade: number;
 
-    constructor(nome: string, preco: number, quantidade: number) {
-        this.nome = nome;
-        this.preco = preco;
-        this.quantidade = quantidade;
+interface ProdutoLoja {
+    codigo: number;
+    nome: string;
+}
+
+
+class Loja {
+    produtos: ProdutoLoja[];
+
+    
+    constructor(produtos: ProdutoLoja[]) {
+        this.produtos = produtos;
     }
 
     
-    valorTotalEstoque(): number {
-        return this.preco * this.quantidade;
-    }
-
-    
-    exibirValorEstoque(): void {
-        const estoque = this.valorTotalEstoque();
-        console.log(`O Produto: ${this.nome} tem em estoque: R$${estoque.toFixed(2)}`);
+    buscarProdutoPorCodigo(codigo: number): ProdutoLoja | undefined {
+        return this.produtos.find(produto => produto.codigo === codigo);
     }
 }
 
-const produto1 = new Produto("Parafuso", 1, 500);
 
 
-produto1.exibirValorEstoque();
+const produtos: ProdutoLoja[] = [
+    { codigo: 1, nome: "Camiseta" },
+    { codigo: 2, nome: "Calça" },
+    { codigo: 3, nome: "Tênis" }
+];
+
+const loja = new Loja(produtos);
+
+
+const produtoEncontrado = loja.buscarProdutoPorCodigo(2);
+
+
+if (produtoEncontrado) {
+    console.log(`Produto encontrado: ${produtoEncontrado.nome}`);
+} else {
+    console.log("Produto não encontrado");
+}

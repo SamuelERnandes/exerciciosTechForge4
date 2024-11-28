@@ -1,31 +1,42 @@
-class Temperatura {
-    private valor: number; 
+interface Livro {
+    titulo: string;
+    autor: string;
+    disponivel: boolean;
+}
 
-    
-    constructor(valor: number) {
-        this.valor = valor;
+class Biblioteca {
+    livros: Livro[];
+
+  
+    constructor(livros: Livro[]) {
+        this.livros = livros;
     }
 
-    
-    paraFahrenheit(): number {
-        return (this.valor * 9/5) + 32;
-    }
-
-    
-    paraKelvin(): number {
-        return this.valor + 273.15;
-    }
-
-    
-    exibirTemperaturas(): void {
-        console.log(`${this.valor}°C é equivalente a:`);
-        console.log(`${this.paraFahrenheit()}°F (Fahrenheit)`);
-        console.log(`${this.paraKelvin()}K (Kelvin)`);
+   
+    buscarLivrosDisponiveis(): Livro[] {
+        return this.livros.filter(livro => livro.disponivel);
     }
 }
 
 
-const temperatura1 = new Temperatura(25);
 
 
-temperatura1.exibirTemperaturas();
+
+const livros: Livro[] = [
+    { titulo: "1984", autor: "George Orwell", disponivel: true },
+    { titulo: "O Senhor dos Anéis", autor: "J.R.R. Tolkien", disponivel: false },
+    { titulo: "Dom Casmurro", autor: "Machado de Assis", disponivel: true },
+    { titulo: "Harry Potter", autor: "J.K. Rowling", disponivel: false }
+];
+
+
+const biblioteca = new Biblioteca(livros);
+
+
+const livrosDisponiveis = biblioteca.buscarLivrosDisponiveis();
+
+
+console.log("Livros Disponíveis:");
+livrosDisponiveis.forEach(livro => {
+    console.log(`Título: ${livro.titulo}, Autor: ${livro.autor}`);
+});

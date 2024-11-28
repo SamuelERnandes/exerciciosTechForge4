@@ -1,36 +1,34 @@
-class ContaBancaria {
-    private titular: string;
-    private saldo: number;
-    
-    
-    constructor(titular: string, saldo: number) {
-        this.saldo = saldo;
-        this.titular = titular;
+interface Produto {
+    id: number;      
+    nome: string;    
+    preco: number;   
+}
+
+class ItemLoja implements Produto {
+    id: number;
+    nome: string;
+    preco: number;
+
+    // Construtor para atribuir valores às propriedades
+    constructor(id: number, nome: string, preco: number) {
+        this.id = id;
+        this.nome = nome;
+        this.preco = preco;
     }
 
-    
-    exibirDeposito(): void {
-        console.log(`O depósito inicial do usuário ${this.titular} foi de: R$${this.saldo}`);
-    }
-
-  
-    exibirSacar(valorSaque: number): void {
-        if (valorSaque > 0 && valorSaque <= this.saldo) {
-            this.saldo -= valorSaque;  // Subtrai o valor do saque do saldo
-            console.log(`O saque do usuário ${this.titular} foi de: R$${valorSaque}`);
-        } else if (valorSaque > this.saldo) {
-            console.log("Saldo insuficiente para o saque.");
-        } else {
-            console.log("O valor do saque deve ser positivo.");
-        }
+    // Método para exibir as informações do ItemLoja (opcional)
+    exibirInfo(): void {
+        console.log(`ID: ${this.id}, Nome: ${this.nome}, Preço: R$${this.preco}`);
     }
 }
 
 
-const contaBancaria1 = new ContaBancaria("Samuel Ernandes", 1500);
+const item = new ItemLoja(1, "Camiseta", 49.99);
 
 
-contaBancaria1.exibirDeposito();
+item.exibirInfo();
 
 
-contaBancaria1.exibirSacar(500);  
+console.log("ID do Produto:", item.id);
+console.log("Nome do Produto:", item.nome);
+console.log("Preço do Produto: R$", item.preco);
