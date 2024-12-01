@@ -1,34 +1,70 @@
-interface Produto {
-    id: number;      
-    nome: string;    
-    preco: number;   
-}
 
-class ItemLoja implements Produto {
-    id: number;
-    nome: string;
-    preco: number;
-
-    // Construtor para atribuir valores às propriedades
-    constructor(id: number, nome: string, preco: number) {
-        this.id = id;
-        this.nome = nome;
-        this.preco = preco;
+abstract class TaskManager {
+    protected tasks: Set<string>; 
+  
+    constructor() {
+      this.tasks = new Set();
     }
-
-    // Método para exibir as informações do ItemLoja (opcional)
-    exibirInfo(): void {
-        console.log(`ID: ${this.id}, Nome: ${this.nome}, Preço: R$${this.preco}`);
+  
+   
+    abstract addTask(task: string): void;
+  
+    // Método para listar todas as tarefas
+    listTasks(): string[] {
+      return Array.from(this.tasks);
     }
-}
+  }
+  
 
+  class Project extends TaskManager {
+    private projectName: string;
+  
+    constructor(projectName: string) {
+      super(); 
+      this.projectName = projectName;
+    }
+  
+  
+    addTask(task: string): void {
+      if (!this.tasks.has(task)) {
+        this.tasks.add(task);
+        console.log(`Tarefa "${task}" adicionada ao projeto "${this.projectName}".`);
+      } else {
+        console.log(`Tarefa "${task}" já existe no projeto "${this.projectName}".`);
+      }
+    }
+  }
+  
 
-const item = new ItemLoja(1, "Camiseta", 49.99);
+  class DailyTasks extends TaskManager {
+    private date: string;
+  
+    constructor(date: string) {
+      super(); 
+      this.date = date;
+    }
+  
+  
+    addTask(task: string): void {
+      if (!this.tasks.has(task)) {
+        this.tasks.add(task);
+        console.log(`Tarefa diária "${task}" adicionada para o dia ${this.date}.`);
+      } else {
+        console.log(`Tarefa diária "${task}" já foi adicionada para o dia ${this.date}.`);
+      }
+    }
+  }
+  
 
-
-item.exibirInfo();
-
-
-console.log("ID do Produto:", item.id);
-console.log("Nome do Produto:", item.nome);
-console.log("Preço do Produto: R$", item.preco);
+  const project = new Project("Desenvolvimento de Website");
+  project.addTask("Criar layout");
+  project.addTask("Implementar API");
+  project.addTask("Criar layout"); 
+  console.log(project.listTasks());
+  
+  const dailyTasks = new DailyTasks("2024-12-01");
+  dailyTasks.addTask("Revisar e-mails");
+  dailyTasks.addTask("Fazer exercícios");
+  dailyTasks.addTask("Revisar e-mails"); 
+  console.log(dailyTasks.listTasks());
+  

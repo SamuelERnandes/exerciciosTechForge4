@@ -1,40 +1,71 @@
 
-interface ProdutoLoja {
-    codigo: number;
-    nome: string;
-}
-
-
-class Loja {
-    produtos: ProdutoLoja[];
-
-    
-    constructor(produtos: ProdutoLoja[]) {
-        this.produtos = produtos;
+abstract class FavoriteManager {
+    protected favorites: Set<string>; 
+  
+    constructor() {
+      this.favorites = new Set();
     }
-
-    
-    buscarProdutoPorCodigo(codigo: number): ProdutoLoja | undefined {
-        return this.produtos.find(produto => produto.codigo === codigo);
+  
+  
+    abstract addFavorite(item: string): void;
+  
+    getFavorites(): string[] {
+      return Array.from(this.favorites);
     }
-}
+  }
+  
 
+  class MoviesFavoriteManager extends FavoriteManager {
+  
+  
+    addFavorite(item: string): void {
 
+      if (!this.favorites.has(item)) {
+        this.favorites.add(item);
+        console.log(`Filme "${item}" adicionado aos favoritos.`);
+      } else {
+        console.log(`Filme "${item}" já está na lista de favoritos.`);
+      }
+    }
+  
+   
+    getFavorites(): string[] {
+      const sortedFavorites = Array.from(this.favorites).sort(); 
+      return sortedFavorites;
+    }
+  }
+  
 
-const produtos: ProdutoLoja[] = [
-    { codigo: 1, nome: "Camiseta" },
-    { codigo: 2, nome: "Calça" },
-    { codigo: 3, nome: "Tênis" }
-];
+  class BooksFavoriteManager extends FavoriteManager {
+  
 
-const loja = new Loja(produtos);
+    addFavorite(item: string): void {
+      this.favorites.add(item); 
+      console.log(`Livro "${item}" adicionado aos favoritos.`);
+    }
+  
 
+    getFavorites(): string[] {
+   
+      return Array.from(this.favorites).reverse(); 
+    }
+  }
+  
 
-const produtoEncontrado = loja.buscarProdutoPorCodigo(2);
+  
 
-
-if (produtoEncontrado) {
-    console.log(`Produto encontrado: ${produtoEncontrado.nome}`);
-} else {
-    console.log("Produto não encontrado");
-}
+  const movieManager = new MoviesFavoriteManager();
+  movieManager.addFavorite("Inception");
+  movieManager.addFavorite("Interstellar");
+  movieManager.addFavorite("The Dark Knight");
+  movieManager.addFavorite("Inception"); 
+  console.log("Filmes Favoritos:", movieManager.getFavorites());
+  
+  // Gerenciando livros favoritos
+  const bookManager = new BooksFavoriteManager();
+  bookManager.addFavorite("1984");
+  bookManager.addFavorite("Brave New World");
+  bookManager.addFavorite("Fahrenheit 451");
+  bookManager.addFavorite("1984"); 
+  console.log("Livros Favoritos:", bookManager.getFavorites());
+  
