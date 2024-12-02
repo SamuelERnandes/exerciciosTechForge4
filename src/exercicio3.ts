@@ -1,71 +1,63 @@
-
-abstract class FavoriteManager {
-    protected favorites: Set<string>; 
-  
-    constructor() {
-      this.favorites = new Set();
-    }
-  
-  
-    abstract addFavorite(item: string): void;
-  
-    getFavorites(): string[] {
-      return Array.from(this.favorites);
-    }
-  }
-  
-
-  class MoviesFavoriteManager extends FavoriteManager {
-  
-  
-    addFavorite(item: string): void {
-
-      if (!this.favorites.has(item)) {
-        this.favorites.add(item);
-        console.log(`Filme "${item}" adicionado aos favoritos.`);
-      } else {
-        console.log(`Filme "${item}" já está na lista de favoritos.`);
-      }
-    }
-  
+class EmailSender {
    
-    getFavorites(): string[] {
-      const sortedFavorites = Array.from(this.favorites).sort(); 
-      return sortedFavorites;
+    private isValidEmail(email: string): boolean {
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return emailPattern.test(email);
     }
-  }
-  
 
-  class BooksFavoriteManager extends FavoriteManager {
-  
 
-    addFavorite(item: string): void {
-      this.favorites.add(item); 
-      console.log(`Livro "${item}" adicionado aos favoritos.`);
+    private sendEmail(email: string, subject: string, message: string): void {
+        console.log(`Enviando e-mail para ${email}...`);
+        console.log(`Assunto: ${subject}`);
+        console.log(`Mensagem: ${message}`);
     }
-  
 
-    getFavorites(): string[] {
-   
-      return Array.from(this.favorites).reverse(); 
+  
+    sendEmailToContact(email: string, subject: string, message: string): void {
+        if (this.isValidEmail(email)) {
+            this.sendEmail(email, subject, message);
+        } else {
+            console.log("Erro: E-mail inválido.");
+        }
     }
-  }
-  
+}
+
+class ContactValidator {
+    
+    validateEmail(email: string): boolean {
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return emailPattern.test(email);
+    }
+}
+class EmailSender {
+    contactValidator: ContactValidator;
+
+    constructor(contactValidator: ContactValidator) {
+        this.contactValidator = contactValidator;
+    }
 
   
+    private sendEmail(email: string, subject: string, message: string): void {
+        console.log(`Enviando e-mail para ${email}...`);
+        console.log(`Assunto: ${subject}`);
+        console.log(`Mensagem: ${message}`);
+    }
 
-  const movieManager = new MoviesFavoriteManager();
-  movieManager.addFavorite("Inception");
-  movieManager.addFavorite("Interstellar");
-  movieManager.addFavorite("The Dark Knight");
-  movieManager.addFavorite("Inception"); 
-  console.log("Filmes Favoritos:", movieManager.getFavorites());
-  
-  // Gerenciando livros favoritos
-  const bookManager = new BooksFavoriteManager();
-  bookManager.addFavorite("1984");
-  bookManager.addFavorite("Brave New World");
-  bookManager.addFavorite("Fahrenheit 451");
-  bookManager.addFavorite("1984"); 
-  console.log("Livros Favoritos:", bookManager.getFavorites());
-  
+    
+    sendEmailToContact(email: string, subject: string, message: string): void {
+        if (this.contactValidator.validateEmail(email)) {
+            this.sendEmail(email, subject, message);
+        } else {
+            console.log("Erro: E-mail inválido.");
+        }
+    }
+}
+
+const contactValidator = new ContactValidator();
+
+
+const emailSender = new EmailSender(contactValidator);
+
+emailSender.sendEmailToContact('contato@exemplo.com', 'Assunto do E-mail', 'Mensagem do e-mail');
+
+emailSender.sendEmailToContact('contatoexemplo.com', 'Assunto do E-mail', 'Mensagem do e-mail');

@@ -1,95 +1,54 @@
+class UserManager {
+    users: { name: string, email: string }[] = [];
 
-abstract class Inventory {
-    protected inventory: Record<string, number>; 
-  
-    constructor() {
-      this.inventory = {};
-    }
-  
    
-    abstract addItem(item: string, quantity: number): void;
-  
-  
-    abstract removeItem(item: string): void;
-  
-   
-    getInventory(): Record<string, number> {
-      return this.inventory;
+    createUser(name: string, email: string): void {
+       
+        const newUser = { name, email };
+        this.users.push(newUser);
+
+     
+        this.sendEmailNotification(newUser.email, "Bem-vindo!", "Você foi criado com sucesso.");
     }
-  }
-  
 
-  class WarehouseInventory extends Inventory {
-  
-  
-    addItem(item: string, quantity: number): void {
-      if (item in this.inventory) {
-        this.inventory[item] += quantity;
-      } else {
-        this.inventory[item] = quantity;
-      }
-      console.log(`Adicionado ${quantity} de "${item}" ao inventário do armazém.`);
+
+    private sendEmailNotification(email: string, subject: string, message: string): void {
+        console.log(`Enviando e-mail para ${email}...`);
+        console.log(`Assunto: ${subject}`);
+        console.log(`Mensagem: ${message}`);
     }
-  
- 
-    removeItem(item: string): void {
-      if (item in this.inventory) {
-        delete this.inventory[item];
-        console.log(`Item "${item}" removido do inventário do armazém.`);
-      } else {
-        console.log(`Item "${item}" não encontrado no inventário do armazém.`);
-      }
+}
+
+class EmailNotification {
+    sendEmail(email: string, subject: string, message: string): void {
+        console.log(`Enviando e-mail para ${email}...`);
+        console.log(`Assunto: ${subject}`);
+        console.log(`Mensagem: ${message}`);
     }
-  }
-  
+}
+class UserManager {
+    users: { name: string, email: string }[] = [];
+    emailNotification: EmailNotification;
 
-  class StoreInventory extends Inventory {
-  
-    private readonly maxQuantityPerItem: number = 10; 
-  
- 
-    addItem(item: string, quantity: number): void {
-      if (item in this.inventory) {
-        if (this.inventory[item] + quantity <= this.maxQuantityPerItem) {
-          this.inventory[item] += quantity;
-          console.log(`Adicionado ${quantity} de "${item}" ao inventário da loja.`);
-        } else {
-          console.log(`Não é possível adicionar ${quantity} de "${item}". Limite de ${this.maxQuantityPerItem} unidades por item atingido.`);
-        }
-      } else {
-        if (quantity <= this.maxQuantityPerItem) {
-          this.inventory[item] = quantity;
-          console.log(`Adicionado ${quantity} de "${item}" ao inventário da loja.`);
-        } else {
-          console.log(`Não é possível adicionar ${quantity} de "${item}". Limite de ${this.maxQuantityPerItem} unidades por item atingido.`);
-        }
-      }
+    constructor(emailNotification: EmailNotification) {
+        this.emailNotification = emailNotification;
     }
-  
 
-    removeItem(item: string): void {
-      if (item in this.inventory) {
-        delete this.inventory[item];
-        console.log(`Item "${item}" removido do inventário da loja.`);
-      } else {
-        console.log(`Item "${item}" não encontrado no inventário da loja.`);
-      }
+    createUser(name: string, email: string): void {
+        // Criação do usuário
+        const newUser = { name, email };
+        this.users.push(newUser);
+
+        this.emailNotification.sendEmail(newUser.email, "Bem-vindo!", "Você foi criado com sucesso.");
     }
-  }
+}
 
-  
+const emailNotification = new EmailNotification();
 
-  const warehouse = new WarehouseInventory();
-  warehouse.addItem("Cadeiras", 50);
-  warehouse.addItem("Mesas", 30);
-  warehouse.addItem("Cadeiras", 20);
-  console.log(warehouse.getInventory());
 
-  const store = new StoreInventory();
-  store.addItem("Camiseta", 5);
-  store.addItem("Camiseta", 6); 
-  store.addItem("Boné", 8);
-  store.addItem("Boné", 3); 
-  store.removeItem("Boné");
-  console.log(store.getInventory());
-  
+const userManager = new UserManager(emailNotification);
+
+
+userManager.createUser('João', 'joao@example.com');
+
+

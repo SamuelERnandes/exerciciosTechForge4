@@ -1,50 +1,106 @@
 "use strict";
-class TaskManager {
+class Order {
     constructor() {
-        this.tasks = new Set();
+        this.items = [];
+        this.totalPrice = 0;
+        this.paymentStatus = 'Pendente';
+        this.shippingStatus = 'Não Enviado';
     }
-    // Método para listar todas as tarefas
-    listTasks() {
-        return Array.from(this.tasks);
+    addItem(item, price) {
+        this.items.push({ item, price });
+        this.calculateTotal();
     }
-}
-class Project extends TaskManager {
-    constructor(projectName) {
-        super();
-        this.projectName = projectName;
+    calculateTotal() {
+        this.totalPrice = this.items.reduce((sum, currentItem) => sum + currentItem.price, 0);
     }
-    addTask(task) {
-        if (!this.tasks.has(task)) {
-            this.tasks.add(task);
-            console.log(`Tarefa "${task}" adicionada ao projeto "${this.projectName}".`);
+    processPayment() {
+        if (this.totalPrice > 0) {
+            this.paymentStatus = 'Pago';
         }
         else {
-            console.log(`Tarefa "${task}" já existe no projeto "${this.projectName}".`);
+            this.paymentStatus = 'Erro no pagamento';
         }
     }
-}
-class DailyTasks extends TaskManager {
-    constructor(date) {
-        super();
-        this.date = date;
-    }
-    addTask(task) {
-        if (!this.tasks.has(task)) {
-            this.tasks.add(task);
-            console.log(`Tarefa diária "${task}" adicionada para o dia ${this.date}.`);
+    updateShippingStatus() {
+        if (this.paymentStatus === 'Pago') {
+            this.shippingStatus = 'Enviado';
         }
         else {
-            console.log(`Tarefa diária "${task}" já foi adicionada para o dia ${this.date}.`);
+            this.shippingStatus = 'Pendente';
         }
     }
 }
-const project = new Project("Desenvolvimento de Website");
-project.addTask("Criar layout");
-project.addTask("Implementar API");
-project.addTask("Criar layout");
-console.log(project.listTasks());
-const dailyTasks = new DailyTasks("2024-12-01");
-dailyTasks.addTask("Revisar e-mails");
-dailyTasks.addTask("Fazer exercícios");
-dailyTasks.addTask("Revisar e-mails");
-console.log(dailyTasks.listTasks());
+class Cart {
+    constructor() {
+        this.items = [];
+        this.totalPrice = 0;
+    }
+    addItem(item, price) {
+        this.items.push({ item, price });
+        this.calculateTotal();
+    }
+    calculateTotal() {
+        this.totalPrice = this.items.reduce((sum, currentItem) => sum + currentItem.price, 0);
+    }
+}
+class Payment {
+    constructor() {
+        this.status = 'Pendente';
+    }
+    processPayment(totalPrice) {
+        if (totalPrice > 0) {
+            this.status = 'Pago';
+        }
+        else {
+            this.status = 'Erro no pagamento';
+        }
+    }
+}
+class Shipping {
+    constructor() {
+        this.status = 'Não Enviado';
+    }
+    updateShippingStatus(paymentStatus) {
+        if (paymentStatus === 'Pago') {
+            this.status = 'Enviado';
+        }
+        else {
+            this.status = 'Pendente';
+        }
+    }
+}
+class Order {
+    constructor() {
+        this.cart = new Cart();
+        this.payment = new Payment();
+        this.shipping = new Shipping();
+    }
+    addItem(item, price) {
+        this.cart.addItem(item, price);
+    }
+    calculateTotal() {
+        return this.cart.totalPrice;
+    }
+    processPayment() {
+        this.payment.processPayment(this.cart.totalPrice);
+    }
+    updateShippingStatus() {
+        this.shipping.updateShippingStatus(this.payment.status);
+    }
+    getOrderDetails() {
+        return {
+            items: this.cart.items,
+            totalPrice: this.cart.totalPrice,
+            paymentStatus: this.payment.status,
+            shippingStatus: this.shipping.status
+        };
+    }
+}
+let order = new Order();
+order.addItem('Camiseta', 29.99);
+order.addItem('Calça Jeans', 49.99);
+console.log(`Preço total: ${order.calculateTotal()}`);
+order.processPayment();
+order.updateShippingStatus();
+const orderDetails = order.getOrderDetails();
+console.log(orderDetails);

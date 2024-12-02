@@ -1,46 +1,48 @@
 "use strict";
-class FavoriteManager {
-    constructor() {
-        this.favorites = new Set();
+class EmailSender {
+    isValidEmail(email) {
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return emailPattern.test(email);
     }
-    getFavorites() {
-        return Array.from(this.favorites);
+    sendEmail(email, subject, message) {
+        console.log(`Enviando e-mail para ${email}...`);
+        console.log(`Assunto: ${subject}`);
+        console.log(`Mensagem: ${message}`);
     }
-}
-class MoviesFavoriteManager extends FavoriteManager {
-    addFavorite(item) {
-        if (!this.favorites.has(item)) {
-            this.favorites.add(item);
-            console.log(`Filme "${item}" adicionado aos favoritos.`);
+    sendEmailToContact(email, subject, message) {
+        if (this.isValidEmail(email)) {
+            this.sendEmail(email, subject, message);
         }
         else {
-            console.log(`Filme "${item}" já está na lista de favoritos.`);
+            console.log("Erro: E-mail inválido.");
         }
     }
-    getFavorites() {
-        const sortedFavorites = Array.from(this.favorites).sort();
-        return sortedFavorites;
+}
+class ContactValidator {
+    validateEmail(email) {
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return emailPattern.test(email);
     }
 }
-class BooksFavoriteManager extends FavoriteManager {
-    addFavorite(item) {
-        this.favorites.add(item);
-        console.log(`Livro "${item}" adicionado aos favoritos.`);
+class EmailSender {
+    constructor(contactValidator) {
+        this.contactValidator = contactValidator;
     }
-    getFavorites() {
-        return Array.from(this.favorites).reverse();
+    sendEmail(email, subject, message) {
+        console.log(`Enviando e-mail para ${email}...`);
+        console.log(`Assunto: ${subject}`);
+        console.log(`Mensagem: ${message}`);
+    }
+    sendEmailToContact(email, subject, message) {
+        if (this.contactValidator.validateEmail(email)) {
+            this.sendEmail(email, subject, message);
+        }
+        else {
+            console.log("Erro: E-mail inválido.");
+        }
     }
 }
-const movieManager = new MoviesFavoriteManager();
-movieManager.addFavorite("Inception");
-movieManager.addFavorite("Interstellar");
-movieManager.addFavorite("The Dark Knight");
-movieManager.addFavorite("Inception");
-console.log("Filmes Favoritos:", movieManager.getFavorites());
-// Gerenciando livros favoritos
-const bookManager = new BooksFavoriteManager();
-bookManager.addFavorite("1984");
-bookManager.addFavorite("Brave New World");
-bookManager.addFavorite("Fahrenheit 451");
-bookManager.addFavorite("1984");
-console.log("Livros Favoritos:", bookManager.getFavorites());
+const contactValidator = new ContactValidator();
+const emailSender = new EmailSender(contactValidator);
+emailSender.sendEmailToContact('contato@exemplo.com', 'Assunto do E-mail', 'Mensagem do e-mail');
+emailSender.sendEmailToContact('contatoexemplo.com', 'Assunto do E-mail', 'Mensagem do e-mail');

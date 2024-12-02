@@ -1,70 +1,122 @@
+class Order {
+    items: { item: string, price: number }[] = [];
+    totalPrice: number = 0;
+    paymentStatus: string = 'Pendente';
+    shippingStatus: string = 'Não Enviado';
 
-abstract class TaskManager {
-    protected tasks: Set<string>; 
-  
+    addItem(item: string, price: number): void {
+        this.items.push({ item, price });
+        this.calculateTotal();
+    }
+
+    calculateTotal(): void {
+        this.totalPrice = this.items.reduce((sum, currentItem) => sum + currentItem.price, 0);
+    }
+
+    processPayment(): void {
+        if (this.totalPrice > 0) {
+            this.paymentStatus = 'Pago';
+        } else {
+            this.paymentStatus = 'Erro no pagamento';
+        }
+    }
+
+    updateShippingStatus(): void {
+        if (this.paymentStatus === 'Pago') {
+            this.shippingStatus = 'Enviado';
+        } else {
+            this.shippingStatus = 'Pendente';
+        }
+    }
+}
+
+class Cart {
+    items: { item: string, price: number }[] = [];
+    totalPrice: number = 0;
+
+    addItem(item: string, price: number): void {
+        this.items.push({ item, price });
+        this.calculateTotal();
+    }
+
+    calculateTotal(): void {
+        this.totalPrice = this.items.reduce((sum, currentItem) => sum + currentItem.price, 0);
+    }
+}
+class Payment {
+    status: string = 'Pendente';
+
+    processPayment(totalPrice: number): void {
+        if (totalPrice > 0) {
+            this.status = 'Pago';
+        } else {
+            this.status = 'Erro no pagamento';
+        }
+    }
+}
+class Shipping {
+    status: string = 'Não Enviado';
+
+    updateShippingStatus(paymentStatus: string): void {
+        if (paymentStatus === 'Pago') {
+            this.status = 'Enviado';
+        } else {
+            this.status = 'Pendente';
+        }
+    }
+}
+class Order {
+    cart: Cart;
+    payment: Payment;
+    shipping: Shipping;
+
     constructor() {
-      this.tasks = new Set();
+        this.cart = new Cart();
+        this.payment = new Payment();
+        this.shipping = new Shipping();
     }
-  
-   
-    abstract addTask(task: string): void;
-  
-    // Método para listar todas as tarefas
-    listTasks(): string[] {
-      return Array.from(this.tasks);
-    }
-  }
-  
 
-  class Project extends TaskManager {
-    private projectName: string;
-  
-    constructor(projectName: string) {
-      super(); 
-      this.projectName = projectName;
+    addItem(item: string, price: number): void {
+        this.cart.addItem(item, price);
     }
-  
-  
-    addTask(task: string): void {
-      if (!this.tasks.has(task)) {
-        this.tasks.add(task);
-        console.log(`Tarefa "${task}" adicionada ao projeto "${this.projectName}".`);
-      } else {
-        console.log(`Tarefa "${task}" já existe no projeto "${this.projectName}".`);
-      }
-    }
-  }
-  
 
-  class DailyTasks extends TaskManager {
-    private date: string;
-  
-    constructor(date: string) {
-      super(); 
-      this.date = date;
+    calculateTotal(): number {
+        return this.cart.totalPrice;
     }
-  
-  
-    addTask(task: string): void {
-      if (!this.tasks.has(task)) {
-        this.tasks.add(task);
-        console.log(`Tarefa diária "${task}" adicionada para o dia ${this.date}.`);
-      } else {
-        console.log(`Tarefa diária "${task}" já foi adicionada para o dia ${this.date}.`);
-      }
-    }
-  }
-  
 
-  const project = new Project("Desenvolvimento de Website");
-  project.addTask("Criar layout");
-  project.addTask("Implementar API");
-  project.addTask("Criar layout"); 
-  console.log(project.listTasks());
-  
-  const dailyTasks = new DailyTasks("2024-12-01");
-  dailyTasks.addTask("Revisar e-mails");
-  dailyTasks.addTask("Fazer exercícios");
-  dailyTasks.addTask("Revisar e-mails"); 
-  console.log(dailyTasks.listTasks());
-  
+    processPayment(): void {
+        this.payment.processPayment(this.cart.totalPrice);
+    }
+
+    updateShippingStatus(): void {
+        this.shipping.updateShippingStatus(this.payment.status);
+    }
+
+    getOrderDetails(): object {
+        return {
+            items: this.cart.items,
+            totalPrice: this.cart.totalPrice,
+            paymentStatus: this.payment.status,
+            shippingStatus: this.shipping.status
+        };
+    }
+}
+
+
+let order = new Order();
+
+
+order.addItem('Camiseta', 29.99);
+order.addItem('Calça Jeans', 49.99);
+
+
+console.log(`Preço total: ${order.calculateTotal()}`);
+
+
+order.processPayment();
+
+
+order.updateShippingStatus();
+
+const orderDetails = order.getOrderDetails();
+console.log(orderDetails);
